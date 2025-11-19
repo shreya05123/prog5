@@ -21,7 +21,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: nidhireddy/devops6 # your dockerhub repo name
+          images: shreyarajeev/devops6 # your dockerhub repo name
 
   build_and_push:
     name: Build and Push Docker image
