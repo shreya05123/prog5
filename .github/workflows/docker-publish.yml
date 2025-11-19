@@ -1,47 +1,27 @@
-name: Publish Docker Image
+name: Publish Docker image
 
 on:
   push:
-    branches: ['main']
+    branches:
+      - main
 
 jobs:
-
-  prepare_metadata:
-    name: Prepare Docker metadata
+  push_to_registry:
+    name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-    outputs:
-      tags: ${{ steps.meta.outputs.tags }}
-      labels: ${{ steps.meta.outputs.labels }}
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: shreyarajeev/devops6 # your dockerhub repo name
-
-  build_and_push:
-    name: Build and Push Docker image
-    runs-on: ubuntu-latest
-    needs: prepare_metadata   # links the jobs (this creates the arrow)
-
-    steps:
-      - name: Check out repository
+      - name: Check out the repo
         uses: actions/checkout@v3
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          context: .
-          push: true
-          tags: ${{ needs.prepare_metadata.outputs.tags }}
-          labels: ${{ needs.prepare_metadata.outputs.labels }}
+          images: shreyarajeev/devops5
